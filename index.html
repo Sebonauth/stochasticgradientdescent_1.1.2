@@ -106,6 +106,16 @@
                 hoverinfo: 'none'  // Disable hover info for this trace
             };
 
+            // Plot the second red point at x = 3.2
+            const secondStartPointPlot = {
+                x: [pathX[1]],
+                y: [pathY[1]],
+                mode: 'markers',
+                marker: { color: '#e74c3c', size: 12 },
+                name: 'Gradient Descent Step 2 Start',
+                hoverinfo: 'none'  // Disable hover info for this trace
+            };
+
             // Plot the point that moves during gradient descent
             const animatedPointPlot = {
                 x: [pathX[0]],  // Start at x = 4
@@ -143,14 +153,14 @@
             };
 
             // Initial plot with two points (initial point and moving point)
-            Plotly.newPlot('plot', [functionPlot, initialPointPlot, animatedPointPlot], layout, config);
+            Plotly.newPlot('plot', [functionPlot, initialPointPlot, secondStartPointPlot, animatedPointPlot], layout, config);
 
             // Function to animate the moving point
             function animatePoint() {
                 // First move: x = 4 -> x = 3.2
                 Plotly.animate('plot', {
                     data: [{ x: [pathX[1]], y: [pathY[1]] }],
-                    traces: [2],
+                    traces: [3],
                     layout: {}
                 }, {
                     transition: {
@@ -165,7 +175,7 @@
                     setTimeout(() => {
                         Plotly.animate('plot', {
                             data: [{ x: [pathX[2]], y: [pathY[2]] }],
-                            traces: [2],
+                            traces: [3],
                             layout: {}
                         }, {
                             transition: {
@@ -180,7 +190,7 @@
                             setTimeout(() => {
                                 Plotly.animate('plot', {
                                     data: [{ x: [pathX[0]], y: [pathY[0]] }],
-                                    traces: [2],
+                                    traces: [3],
                                     layout: {}
                                 }, {
                                     transition: {
