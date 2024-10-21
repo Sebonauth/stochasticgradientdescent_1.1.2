@@ -72,7 +72,7 @@
             let x = 4;  // Starting point x = 4
             const learningRate = 0.1;
 
-            // Initial point
+            // Initial point (x = 4)
             pathX.push(x);
             pathY.push(x * x);
 
@@ -106,20 +106,20 @@
                 hoverinfo: 'none'  // Disable hover info for this trace
             };
 
-            // Plot the second red point at x = 3.2
-            const secondStartPointPlot = {
+            // Plot the second static point at x = 3.2
+            const secondStaticPointPlot = {
                 x: [pathX[1]],
                 y: [pathY[1]],
                 mode: 'markers',
                 marker: { color: '#e74c3c', size: 12 },
-                name: 'Gradient Descent Step 2 Start',
+                name: 'Second Point',
                 hoverinfo: 'none'  // Disable hover info for this trace
             };
 
-            // Plot the point that moves during gradient descent
+            // Plot the point that animates from x = 3.2 to x = 2.56
             const animatedPointPlot = {
-                x: [pathX[0]],  // Start at x = 4
-                y: [pathY[0]],
+                x: [pathX[1]],  // Start at x = 3.2
+                y: [pathY[1]],
                 mode: 'markers',
                 marker: { color: '#f1c40f', size: 12 },
                 name: 'Moving Point',
@@ -152,14 +152,13 @@
                 displayModeBar: false  // Hide the Plotly toolbar
             };
 
-            // Initial plot with two points (initial point and moving point)
-            Plotly.newPlot('plot', [functionPlot, initialPointPlot, secondStartPointPlot, animatedPointPlot], layout, config);
+            // Initial plot with three points (initial, second static, and moving point)
+            Plotly.newPlot('plot', [functionPlot, initialPointPlot, secondStaticPointPlot, animatedPointPlot], layout, config);
 
-            // Function to animate the moving point
+            // Function to animate the moving point (x = 3.2 -> x = 2.56)
             function animatePoint() {
-                // First move: x = 4 -> x = 3.2
                 Plotly.animate('plot', {
-                    data: [{ x: [pathX[1]], y: [pathY[1]] }],
+                    data: [{ x: [pathX[2]], y: [pathY[2]] }],
                     traces: [3],
                     layout: {}
                 }, {
@@ -171,39 +170,22 @@
                         duration: 1000
                     }
                 }).then(() => {
-                    // Second move: x = 3.2 -> x = 2.56
+                    // After the move, reset the point back to x = 3.2 and repeat the loop
                     setTimeout(() => {
                         Plotly.animate('plot', {
-                            data: [{ x: [pathX[2]], y: [pathY[2]] }],
+                            data: [{ x: [pathX[1]], y: [pathY[1]] }],
                             traces: [3],
                             layout: {}
                         }, {
                             transition: {
-                                duration: 1000,
-                                easing: 'cubic-in-out'
+                                duration: 0, // Instant reset to start
                             },
                             frame: {
-                                duration: 1000
+                                duration: 0
                             }
-                        }).then(() => {
-                            // After both moves, reset the point back to x = 4 and repeat the loop
-                            setTimeout(() => {
-                                Plotly.animate('plot', {
-                                    data: [{ x: [pathX[0]], y: [pathY[0]] }],
-                                    traces: [3],
-                                    layout: {}
-                                }, {
-                                    transition: {
-                                        duration: 0, // Instant reset to start
-                                    },
-                                    frame: {
-                                        duration: 0
-                                    }
-                                });
-                                animatePoint(); // Repeat the loop
-                            }, 500); // Short pause before restarting the animation
                         });
-                    }, 500); // Short pause between the two moves
+                        animatePoint(); // Repeat the loop
+                    }, 500); // Short pause before restarting the animation
                 });
             }
 
